@@ -180,7 +180,7 @@ export class PhoneBooksComponent implements OnInit {
 
 
   checkNameLength(name) {
-    if (name.length > 3) {
+    if (name.length >= 3) {
       return true;
     } else {
       return false;
