@@ -1,0 +1,75 @@
+<body>
+    <div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h2>PhoneBooks</h2>
+                    </div>
+
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-12">
+                        <input (keyup)="Search()" [(ngModel)]="searchText" class="form-control" type="text" placeholder="Search" aria-label="Search">
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let phonebook of filterList; let i = index">
+                        <tr *ngIf="selected !== i">
+                            <td>{{phonebook.name}}</td>
+
+                            <td>{{phonebook.phoneNumber}}</td>
+                            <td>
+                                <a (click)="EditPhoneBook(i)" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                                <a (click)="deletePhoneBook(phonebook.id)" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="selected === i">
+                            <td>
+                                <input [(ngModel)]="phonebook.name"> </td>
+                            <td>
+                                <input [(ngModel)]="phonebook.phoneNumber" pattern="^[0-9]+$" />
+                            </td>
+                            <td>
+                                <a (click)="SubmitEditPhoneBook(phonebook)" class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                                <a (click)="deletePhoneBook(phonebook.id)" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                            </td>
+                        </tr>
+
+                    </ng-container>
+
+                </tbody>
+            </table>
+
+            <div class="container">
+                <form class="form-inline" (ngSubmit)="AddNewPhoneBook()">
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="Name" class="sr-only">Name</label>
+                        <input type="text" [(ngModel)]="newphonebook.name" name="name" class="form-control" id="Name" placeholder="Name">
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="Number" class="sr-only">Phone Number</label>
+                        <input type="text" [(ngModel)]="newphonebook.phoneNumber" name="phoneNumber" class="form-control" id="Number" placeholder="Phone Number">
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Add</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</body>
