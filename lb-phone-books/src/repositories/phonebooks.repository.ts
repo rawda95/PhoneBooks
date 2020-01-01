@@ -13,4 +13,27 @@ export class PhonebooksRepository extends DefaultCrudRepository<
   ) {
     super(Phonebooks, dataSource);
   }
+
+ async CheckForUnique(PhoneNumber:string)
+  {
+   
+
+    var phonebooks = await this.find(); 
+    var Isunique = true ; 
+    phonebooks.forEach(phone => {
+      if(phone.phoneNumber == PhoneNumber)
+      {
+        Isunique= false;
+      }
+    });
+    if(Isunique)
+    {
+      return true;
+    }
+    else
+    {
+      return false; 
+    }
+
+  }
 }

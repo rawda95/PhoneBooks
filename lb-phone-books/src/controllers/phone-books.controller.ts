@@ -5,6 +5,10 @@ import {
   repository,
   Where,
 } from '@loopback/repository';
+import * as rxjsNumeric from "rxjs/util/isNumeric";
+
+
+
 import {
   post,
   param,
@@ -14,6 +18,7 @@ import {
   getWhereSchemaFor,
   patch,
   put,
+  HttpErrors,
   del,
   requestBody,
 } from '@loopback/rest';
@@ -47,6 +52,15 @@ export class PhoneBooksController {
     })
     phonebooks: Omit<Phonebooks, 'id'>,
   ): Promise<Phonebooks> {
+    if(!Number.isInteger(Number(phonebooks.phoneNumber)))
+    {
+      throw new HttpErrors.UnprocessableEntity('Invalid phoneNumber filed.');
+
+    }
+    if(this.phonebooksRepository.CheckForUnique(phonebooks.phoneNumber)){
+      throw new HttpErrors.UnprocessableEntity('This phoneNumber is used before.');
+      }
+    
     return this.phonebooksRepository.create(phonebooks);
   }
 

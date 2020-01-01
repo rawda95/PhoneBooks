@@ -26,6 +26,10 @@ export class Phonebooks extends Entity {
     type: 'string',
     required: true,
     min:3,
+    jsonSchema: {
+      
+      minLength: 3,
+    },
   })
   name: string;
 
@@ -39,6 +43,7 @@ export class Phonebooks extends Entity {
   phoneNumber: string;
 
   constructor(data?: Partial<Phonebooks>) {
+  
     super(data);
   }
 }
