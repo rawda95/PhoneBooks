@@ -43,7 +43,7 @@
                             <td>
                                 <input [(ngModel)]="phonebook.name"> </td>
                             <td>
-                                <input [(ngModel)]="phonebook.phoneNumber" pattern="^[0-9]+$" />
+                                <input type='number' [(ngModel)]="phonebook.phoneNumber" pattern="^[0-9]+$" />
                             </td>
                             <td>
                                 <a (click)="SubmitEditPhoneBook(phonebook)" class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
@@ -64,7 +64,7 @@
                     </div>
                     <div class="form-group mx-sm-3 mb-2">
                         <label for="Number" class="sr-only">Phone Number</label>
-                        <input type="text" [(ngModel)]="newphonebook.phoneNumber" name="phoneNumber" class="form-control" id="Number" placeholder="Phone Number">
+                        <input type="number" [(ngModel)]="newphonebook.phoneNumber" name="phoneNumber" class="form-control" id="Number" placeholder="Phone Number">
                     </div>
                     <button type="submit" class="btn btn-primary mb-2">Add</button>
                 </form>

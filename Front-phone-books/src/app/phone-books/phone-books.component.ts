@@ -26,8 +26,7 @@ export class PhoneBooksComponent implements OnInit {
   }
 
 
-  reloadData()
-  {
+  reloadData() {
     this.phoneBooksService.getPhoneBooksList().subscribe((data) => {
       this.phonebooks = data;
       this.filterList = data;
@@ -45,41 +44,42 @@ export class PhoneBooksComponent implements OnInit {
       cancelButtonText: 'No, keep it'
     }).then((result) => {
       if (result.value) {
-    this.phoneBooksService.deletePhoneBook(id).subscribe((data)=>{
-          console.log(data);
+    this.phoneBooksService.deletePhoneBook(id).subscribe((data) => {
+
           this.phonebooks = this.phonebooks.filter(phonebook => phonebook.id !== id);
           this.Search() ;
           Swal.fire(
             'Deleted!',
             'Your phone book has been deleted.',
             'success'
-          )
-        });
-     
- 
+          );
+
+        },
+        (error) => {
+          Swal.fire(
+            'error!',
+            error.error.error.message,
+            'error');
+        }
+        );
+
+
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-      
+
       }
-    })
-  
-    // this.employeeService.deleteEmployee(id)
-    //   .subscribe(
-    //     data => {
-    //       console.log(data);
-    //       this.reloadData();
-    //     },
-    //     error => console.log(error));
+    });
+
   }
 
-  EditPhoneBook(row)
-  {
+  EditPhoneBook(row) {
     this.selected = row ;
   }
- 
-  SubmitEditPhoneBook(phonebook)
-  {
+
+  SubmitEditPhoneBook(phonebook) {
+    const validationResult = this.SubmitValidation(phonebook);
+    if (validationResult.Isvalid) {
     Swal.fire({
-      title: 'Are you sure you whant to update this phone book ?',
+      title: 'Are you sure you want to update this phone book?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, update it!',
@@ -87,24 +87,41 @@ export class PhoneBooksComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
           this.selected = -1 ;
-          console.log(phonebook);
+          
           this.phoneBooksService.updatePhoneBook(phonebook.id, phonebook).subscribe((data) => {
-            console.log(data);
-          });
-          Swal.fire(
-            'Updated!',
-            'Your phone book has been Updated.',
-            'success');
-          this.Search() ;
+
+              Swal.fire(
+                'Updated!',
+                'Your phone book has been Updated.',
+                'success');
+              this.Search() ;
+
+          },
+          (error) => {
+            Swal.fire(
+              'error!',
+              error.error.error.message,
+              'error');
+          }
+          );
+
 
       } else if (result.dismiss === Swal.DismissReason.cancel) {
       }
     });
+  } else {
+
+    this.reloadData();
+    Swal.fire(
+      'error!',
+      JSON.stringify(validationResult.message),
+    'error');
+  }
   }
 
-  AddNewPhoneBook() 
-  {
-
+  AddNewPhoneBook() {
+    const validationResult = this.SubmitValidation(this.newphonebook);
+    if (validationResult.Isvalid) {
     Swal.fire({
       title: 'Are you sure you whant to submit this phone book ?',
       icon: 'warning',
@@ -114,35 +131,89 @@ export class PhoneBooksComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
           this.phoneBooksService.createPhoneBooks(this.newphonebook).subscribe((data) => {
-            console.log(data);
-            this.phonebooks.push(data);
-            this.Search() ;
 
-          });
-          Swal.fire(
-            'Added!',
-            'Your phone book has been added.',
-            'success');
-            this.newphonebook.name= " ";
-            this.newphonebook.phoneNumber= " ";
+            this.phonebooks.push(data);
+            this.Search();
+
+            Swal.fire(
+              'Added!',
+              'Your phone book has been added.',
+              'success');
+            this.newphonebook.name = ' ';
+            this.newphonebook.phoneNumber = ' ';
+
+
+          }, (error) => {
+            Swal.fire(
+              'error!',
+              error.error.error.message,
+              'error');
+          }
+          );
+
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        this.newphonebook.name= " ";
-        this.newphonebook.phoneNumber= " ";
+        this.newphonebook.name = ' ';
+        this.newphonebook.phoneNumber = ' ';
 
       }
     });
+  } else {
+    this.reloadData();
+
+    Swal.fire(
+      'error!',
+      JSON.stringify(validationResult.message),
+      'error');
+  }
   }
 
-  Search()
-  {
-    if(this.searchText || this.searchText===""){
+
+  Search() {
+    if (this.searchText || this.searchText === '') {
     this.filterList  = this.phonebooks.filter(phonebook => phonebook.name.toLowerCase().includes (this.searchText.toLowerCase()));
-    console.log(this.searchText);
-    console.log(this.filterList);
+    } else {
+      this.filterList = this.phonebooks;
+
     }
-    else{
-      this.filterList =this.phonebooks; 
-    
+  }
+
+
+
+  checkNameLength(name) {
+    if (name.length > 3) {
+      return true;
+    } else {
+      return false;
     }
+  }
+  checkPhoneNumber(phoneNumber, id) {
+    const PoneBookId = id === undefined ? -1 : id;
+    const phoneNumberList  = this.phonebooks.filter(phonebook => (phonebook.phoneNumber === phoneNumber && phonebook.id !== PoneBookId));
+    if (phoneNumberList.length > 0) {
+     return false ;
+   } else {
+     return true;
+   }
+  }
+
+  SubmitValidation(phoneNumber) {
+    const errorMessage = [];
+    let IsValid = true;
+    const IsNameValid = this.checkNameLength(phoneNumber.name);
+    if (!IsNameValid) {
+  IsValid = false;
+  errorMessage.push( 'Error in Name , Should be more than 3 char');
+}
+    const IsPhoneNumberValid = this.checkPhoneNumber(phoneNumber.phoneNumber, phoneNumber.id);
+    if (!IsPhoneNumberValid) {
+      IsValid = false;
+      errorMessage.push( 'Error in PhoneNumber , This phone number is used before');
+    }
+    if (IsValid) {
+      return {Isvalid: true} ;
+    } else {
+      return {Isvalid: false, message: errorMessage};
+    }
+
   }
 }

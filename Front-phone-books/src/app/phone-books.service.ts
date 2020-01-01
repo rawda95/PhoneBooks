@@ -12,10 +12,13 @@ export class PhoneBooksService {
   constructor(private httpClient: HttpClient) { }
 
   createPhoneBooks(phonebook: Phonebook ) {
+    phonebook.phoneNumber = phonebook.phoneNumber.toString();
     return this.httpClient.post<Phonebook>(`${this.baseUrl}`, phonebook);
   }
 
   updatePhoneBook(id: number, value: any): Observable<Object> {
+    value.phoneNumber = value.phoneNumber.toString();
+
     return this.httpClient.put(`${this.baseUrl}/${id}`, value);
   }
 

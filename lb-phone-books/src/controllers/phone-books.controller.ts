@@ -57,7 +57,9 @@ export class PhoneBooksController {
       throw new HttpErrors.UnprocessableEntity('Invalid phoneNumber filed.');
 
     }
-    if(this.phonebooksRepository.CheckForUnique(phonebooks.phoneNumber)){
+    const IsNumberUnique = await this.phonebooksRepository.CheckForUnique(phonebooks.phoneNumber)
+
+    if(IsNumberUnique==false){
       throw new HttpErrors.UnprocessableEntity('This phoneNumber is used before.');
       }
     
@@ -158,6 +160,16 @@ export class PhoneBooksController {
     })
     phonebooks: Phonebooks,
   ): Promise<void> {
+    if(!Number.isInteger(Number(phonebooks.phoneNumber)))
+    {
+      throw new HttpErrors.UnprocessableEntity('Invalid phoneNumber filed.');
+
+    }
+    const IsNumberUnique = await this.phonebooksRepository.CheckForUnique(phonebooks.phoneNumber)
+    if(IsNumberUnique==false){
+      throw new HttpErrors.UnprocessableEntity('This phoneNumber is used before.');
+      }
+      
     await this.phonebooksRepository.updateById(id, phonebooks);
   }
 
