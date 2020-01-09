@@ -98,6 +98,7 @@ export class PhoneBooksController {
   async find(
     @param.query.object('filter', getFilterSchemaFor(Phonebooks)) filter?: Filter<Phonebooks>,
   ): Promise<Phonebooks[]> {
+    //console.log(filter)
     return this.phonebooksRepository.find(filter);
   }
 
