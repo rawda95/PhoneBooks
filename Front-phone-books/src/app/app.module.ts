@@ -6,12 +6,14 @@ import { AppComponent } from './app.component';
 import { PhoneBooksComponent } from './phone-books/phone-books.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { JwPaginationComponent } from 'jw-angular-pagination';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     PhoneBooksComponent,
+    JwPaginationComponent,
     
   ],
   imports: [

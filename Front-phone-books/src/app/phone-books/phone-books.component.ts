@@ -4,6 +4,7 @@ import { PhoneBooksService } from '../phone-books.service';
 import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
 import { tick } from '@angular/core/testing';
+import { FilterModel } from '../filter-model';
 
 
 @Component({
@@ -12,22 +13,37 @@ import { tick } from '@angular/core/testing';
   styleUrls: ['./phone-books.component.css']
 })
 export class PhoneBooksComponent implements OnInit {
-
+  totalcount ;
+  currentPage ;
   phonebooks;
   selected;
   newphonebook = new Phonebook();
-  searchText;
+  filterModel = new FilterModel();
+  searchText ;
   filterList;
 
   constructor(private phoneBooksService: PhoneBooksService) { }
 
   ngOnInit() {
+    this.currentPage = 1 ;
    this.reloadData();
+   this.GetPhoneListCount();
   }
 
 
   reloadData() {
-    this.phoneBooksService.getPhoneBooksList().subscribe((data) => {
+
+    this. filterModel.limit = 5 ;
+    this. filterModel.skip = ((this.currentPage-1) * 5) ;
+    this. filterModel.offset = 1 ;
+    if (this.searchText !== '') {
+    this.filterModel.name = this.searchText;
+  } else {
+    this.filterModel.name = undefined;
+  }
+
+
+    this.phoneBooksService.getPhoneBooksList(this.filterModel).subscribe((data) => {
       this.phonebooks = data;
       this.filterList = data;
 
@@ -87,7 +103,7 @@ export class PhoneBooksComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
           this.selected = -1 ;
-          
+
           this.phoneBooksService.updatePhoneBook(phonebook.id, phonebook).subscribe((data) => {
 
               Swal.fire(
@@ -133,7 +149,7 @@ export class PhoneBooksComponent implements OnInit {
           this.phoneBooksService.createPhoneBooks(this.newphonebook).subscribe((data) => {
 
             this.phonebooks.push(data);
-            this.Search();
+            this.reloadData();
 
             Swal.fire(
               'Added!',
@@ -169,12 +185,13 @@ export class PhoneBooksComponent implements OnInit {
 
 
   Search() {
-    if (this.searchText || this.searchText === '') {
-    this.filterList  = this.phonebooks.filter(phonebook => phonebook.name.toLowerCase().includes (this.searchText.toLowerCase()));
-    } else {
-      this.filterList = this.phonebooks;
+    // if (this.searchText || this.searchText === '') {
+    // this.filterList  = this.phonebooks.filter(phonebook => phonebook.name.toLowerCase().includes (this.searchText.toLowerCase()));
+    // } else {
+    //   this.filterList = this.phonebooks;
 
-    }
+    // }
+    this.reloadData();
   }
 
 
@@ -216,4 +233,28 @@ export class PhoneBooksComponent implements OnInit {
     }
 
   }
+
+  onPageClick(i){
+    this.currentPage = i ;
+   // console.log(i);
+    this.reloadData();
+  
+  }
+
+  GetPhoneListCount() {
+
+    this.phoneBooksService.getPhoneListCount().subscribe((data) => {
+
+      let pages = Math.floor(data.count / 5);
+      var rem = data.count % 5;
+      if(rem!==0)
+      {
+        pages++;
+      }
+
+      this.totalcount = Array(pages);
+    });
+
+  }
+
 }

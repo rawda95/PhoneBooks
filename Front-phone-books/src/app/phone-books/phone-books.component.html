@@ -70,6 +70,19 @@
                 </form>
             </div>
 
+            <div class="container">
+                <div class="pb-0 pt-3">
+                    <ul *ngFor="let x of totalcount ;let i = index" class="pagination">
+                        <li [ngClass]="{active:currentPage === i+1}" class="page-item ">
+                            <a (click)="onPageClick(i+1)" class="page-link">{{i+1}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
+
+
     </div>
+
+
 </body>

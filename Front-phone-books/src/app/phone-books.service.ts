@@ -1,4 +1,6 @@
 import { Phonebook } from './phonebook';
+import { FilterModel } from './filter-model';
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -16,6 +18,7 @@ export class PhoneBooksService {
     return this.httpClient.post<Phonebook>(`${this.baseUrl}`, phonebook);
   }
 
+
   updatePhoneBook(id: number, value: any): Observable<Object> {
     value.phoneNumber = value.phoneNumber.toString();
 
@@ -26,15 +29,27 @@ export class PhoneBooksService {
     return this.httpClient.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
   }
 
-  getPhoneBooksList() {
-    return this.httpClient.get<Phonebook[]>(`${this.baseUrl}`)//.subscribe(this.extractData);
+  getPhoneBooksList(filter: FilterModel) {
+
+    const params = {
+      'filter[offset]': `${filter.offset}`,
+      'filter[limit]': `${filter.limit}`,
+      'filter[skip]': `${filter.skip}`,
+
+    };
+    if (filter.name !== undefined) {
+      params[`filter[where][name][like]`] = filter.name;
+    }
+    return this.httpClient.get<Phonebook[]>(`${this.baseUrl}`, {
+      params
+    });
   }
 
 
-  private extractData(res) {
-    let body = res.json();
-          return body;
-      }
+  getPhoneListCount() {
+    return this.httpClient.get<any>(`${this.baseUrl}/count`);
+  }
+
+
+
 }
-
-
