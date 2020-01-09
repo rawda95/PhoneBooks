@@ -18,22 +18,14 @@ export class PhonebooksRepository extends DefaultCrudRepository<
   {
    
 
-    var phonebooks = await this.find(); 
-    var Isunique = true ; 
-    phonebooks.forEach(phone => {
-      if(phone.phoneNumber == PhoneNumber)
-      {
-              Isunique= false;
-      }
-    });
-    if(Isunique)
+    var phonebooks = await this.find({where: {phoneNumber:PhoneNumber}}); 
+    if(phonebooks.length !=0)
     {
-      return true;
+      return false ;
+    }else{
+      return true ; 
     }
-    else
-    {
-      return false; 
-    }
+   
 
   }
 }
