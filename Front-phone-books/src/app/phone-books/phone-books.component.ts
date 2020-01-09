@@ -191,6 +191,7 @@ export class PhoneBooksComponent implements OnInit {
     //   this.filterList = this.phonebooks;
 
     // }
+    this.currentPage = 1 ;
     this.reloadData();
   }
 
