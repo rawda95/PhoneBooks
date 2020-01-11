@@ -193,6 +193,8 @@ export class PhoneBooksComponent implements OnInit {
     // }
     this.currentPage = 1 ;
     this.reloadData();
+    this.GetPhoneListCount();
+
   }
 
 
@@ -244,7 +246,7 @@ export class PhoneBooksComponent implements OnInit {
 
   GetPhoneListCount() {
 
-    this.phoneBooksService.getPhoneListCount().subscribe((data) => {
+    this.phoneBooksService.getPhoneListCount(this.searchText).subscribe((data) => {
 
       let pages = Math.floor(data.count / 5);
       var rem = data.count % 5;

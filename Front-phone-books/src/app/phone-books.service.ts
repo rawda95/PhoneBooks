@@ -46,8 +46,19 @@ export class PhoneBooksService {
   }
 
 
-  getPhoneListCount() {
-    return this.httpClient.get<any>(`${this.baseUrl}/count`);
+  getPhoneListCount(name) {
+
+
+
+    if (name !== undefined) {
+      const params = {
+        'where[name][like]': name,
+      };
+      return this.httpClient.get<any>(`${this.baseUrl}/count`, {params});
+    } else {
+      return this.httpClient.get<any>(`${this.baseUrl}/count`);
+
+    }
   }
 
 

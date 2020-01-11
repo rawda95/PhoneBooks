@@ -77,6 +77,7 @@ export class PhoneBooksController {
   async count(
     @param.query.object('where', getWhereSchemaFor(Phonebooks)) where?: Where<Phonebooks>,
   ): Promise<Count> {
+    // console.log(where);
     return this.phonebooksRepository.count(where);
   }
 
